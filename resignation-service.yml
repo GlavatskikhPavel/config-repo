@@ -1,8 +1,31 @@
-server:
-  port: 8085
-
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/test
-    username: test
-    password: test
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  liquibase:
+    change-log: db.changelog/changelog.xml
+  jpa:
+    open-in-view: false
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      myService:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 2
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+accounting-service:
+  url: ${ACCOUNTING_SERVICE_URL}
+
+security-service:
+  url: ${SECURITY_SERVICE_URL}
+
+
+
