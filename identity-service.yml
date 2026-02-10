@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL} 
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    open-in-view: false
+    
+jwt:
+  secret: ${JWT_SECRET}
+  lifetime: ${JWT_LIFETIME}    
