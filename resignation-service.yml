@@ -7,6 +7,63 @@ spring:
     change-log: db.changelog/changelog.xml
   jpa:
     open-in-view: false
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+          - metrics
+          - circuitbreakers
+          - circuitbreakerevents
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  circuitbreaker:
+    circuit-breaker-aspect-order: 1
+    instances:
+      accounting-service:
+        failureRateThreshold: 50
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 2
+        minimum-number-of-calls: 1
+        failure-rate-threshold: 50
+        eventConsumerBufferSize: 10
+        registerHealthIndicator: true
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        record-exceptions:
+          - feign.FeignException.InternalServerError
+          - feign.FeignException.ServiceUnavailable
+          - feign.FeignException.GatewayTimeout
+          - feign.RetryableException
+        ignore-exceptions:
+          - feign.FeignException.BadRequest
+          - feign.FeignException.Unauthorized
+          - feign.FeignException.Forbidden
+          - feign.FeignException.NotFound
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+  retry:
+    retry-aspect-order: 2
+    instances:
+      accounting-service:
+        maxAttempts: 3
+        waitDuration: 5000ms
+        retry-exceptions:
+          - feign.RetryableException
+          - java.net.SocketTimeoutException
+          - java.io.IOException
+        ignore-exceptions:
+          - feign.FeignException.BadRequest
+          - feign.FeignException.Unauthorized
+          - feign.FeignException.Forbidden
+          - feign.FeignException.NotFound
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException    
 
 accounting-service:
   url: ${ACCOUNTING_SERVICE_URL}
