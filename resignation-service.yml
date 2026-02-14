@@ -1,13 +1,35 @@
+server:
+  port: ${SERVER_PORT:0}
+  servlet:
+    context-path: /api/v1
+
 spring:
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+        url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/resignation-db}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:1234}
+    
   liquibase:
     change-log: db.changelog/changelog.xml
-  jpa:
-    open-in-view: false
     
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false
+  
+  main:
+    banner-mode: off  
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+        
 management:
   endpoints:
     web:
@@ -64,12 +86,6 @@ resilience4j:
           - feign.FeignException.Forbidden
           - feign.FeignException.NotFound
           - io.github.resilience4j.circuitbreaker.CallNotPermittedException    
-
-accounting-service:
-  url: ${ACCOUNTING_SERVICE_URL}
-
-security-service:
-  url: ${SECURITY_SERVICE_URL}
 
 
 
