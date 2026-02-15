@@ -47,8 +47,8 @@ management:
 resilience4j:
   circuitbreaker:
     circuit-breaker-aspect-order: 1
-    instances:
-      accounting-service:
+    configs:
+      default:  
         failureRateThreshold: 50
         sliding-window-type: COUNT_BASED
         sliding-window-size: 2
@@ -70,10 +70,17 @@ resilience4j:
           - feign.FeignException.Forbidden
           - feign.FeignException.NotFound
           - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+    instances:
+      accounting:
+        base-config: default
+      security:
+        base-config: default
+      
+          
   retry:
     retry-aspect-order: 2
-    instances:
-      accounting-service:
+    configs:
+      default:
         maxAttempts: 3
         waitDuration: 5000ms
         retry-exceptions:
@@ -86,6 +93,11 @@ resilience4j:
           - feign.FeignException.Forbidden
           - feign.FeignException.NotFound
           - io.github.resilience4j.circuitbreaker.CallNotPermittedException    
+    instances:
+      accounting:
+        base-config: default
+      security:
+        base-config: default
 
 
 
