@@ -1,0 +1,43 @@
+spring:
+  servlet:
+    multipart:
+      file-size-threshold: 2048
+      max-file-size: 5MB
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  liquibase:
+    change-log: db.changelog/changelog.xml
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: UNSPECIFIED
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+  main:
+    banner-mode: "off"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+logging:
+  level:
+    root: info
+    by.javaguru.profiler: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+image:
+  storage-dir: ${IMAGES_STORAGE_FOLDER}
+    
+jwt:
+  secret: ${JWT_SECRET}
+  lifetime: ${JWT_LIFETIME}    
